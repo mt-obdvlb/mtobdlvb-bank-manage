@@ -1,19 +1,37 @@
 {
-  "name": "BankManage",
+  "name": "bank-manage",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "check-types": "turbo run check-types",
+    "prepare": "husky",
+    "lint-staged": "lint-staged"
   },
   "devDependencies": {
-    "prettier": "^3.6.2",
+    "@eslint/css": "^0.11.1",
+    "@eslint/js": "^9.36.0",
+    "@eslint/json": "^0.13.2",
+    "@tanstack/eslint-plugin-query": "^5.91.0",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-turbo": "^2.5.0",
+    "globals": "^16.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.3",
+    "prettier": "3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
     "turbo": "^2.5.8",
-    "typescript": "5.9.2"
+    "typescript-eslint": "^8.44.1"
   },
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@10.16.1",
   "engines": {
     "node": ">=18"
   }

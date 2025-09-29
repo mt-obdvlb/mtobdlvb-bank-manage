@@ -1,0 +1,33 @@
+{
+  "name": "@mtobdvlb/shared-types",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./src/index.ts",
+      "require": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "dev": "concurrently \"pnpm dev:barrels\" \"pnpm dev:tsup\"",
+    "dev:tsup": "tsup --watch --dts",
+    "dev:barrels": "chokidar 'src/**/*.ts' -i 'src/**/*.d.ts' -i 'src/index.ts' -c 'pnpm barrels' --events add,unlink --debounce 500",
+    "build": "pnpm barrels && tsup",
+    "barrels": "barrelsby -d src --delete --recurse -l all -q -S -H --exclude \\\\.d\\\\.ts$"
+  },
+  "dependencies": {
+    "tsup": "^8.5.0",
+    "zod": "^4.0.5"
+  },
+  "devDependencies": {
+    "@esbuild-plugins/tsconfig-paths": "^0.1.2",
+    "@types/node": "^24.5.2",
+    "barrelsby": "^2.8.1",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.25.9",
+    "esbuild-plugin-tsconfig-paths": "^1.0.1"
+  }
+}

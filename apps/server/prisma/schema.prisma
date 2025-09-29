@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  email     String?  @unique
+  phone     String?
+  createdAt DateTime @default(now())
+  accounts  Account[]
+}
+
+model Account {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  balance   Float     @default(0)
+  status    String    @default("active") // active | frozen
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  name      String    @unique
+  password  String        // 6 位数字密码
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  accountId Int
+  type      String   // deposit | withdraw
+  amount    Float
+  createdAt DateTime @default(now())
+  account   Account  @relation(fields: [accountId], references: [id])
+}
