@@ -6,7 +6,7 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "esModuleInterop": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -17,6 +17,8 @@
       "@/*": ["src/*"]
     },
     "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "types": ["vite/client","element-plus/global"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.d.ts"],
   "exclude": ["node_modules"]

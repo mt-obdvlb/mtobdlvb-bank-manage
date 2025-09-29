@@ -26,7 +26,7 @@ export default defineConfig([
   },
 
   // TypeScript 推荐规则
-  ...tseslint.configs.recommended,
+  tseslint.configs.recommended,
 
   // Vue essential
   pluginVue.configs['flat/essential'],

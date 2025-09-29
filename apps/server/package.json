@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@mtobdvlb/shared-types": "workspace:*",
-    "@mtobdvlb/typescript-config":  "workspace:*",
+    "@mtobdvlb/typescript-config": "workspace:*",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
@@ -40,4 +40,5 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.9.2"
   }
+ 
 }

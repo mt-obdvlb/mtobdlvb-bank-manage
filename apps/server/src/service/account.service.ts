@@ -16,6 +16,7 @@ import {
   TransactionType,
 } from '@mtobdvlb/shared-types'
 import { comparePassword } from '@/utils'
+import { Prisma } from '@prisma/client/extension'
 
 const ensureNumber = (v: string, name = 'id') => {
   const n = Number(v)
@@ -143,7 +144,7 @@ export const AccountService = {
     const amt = Number(amount)
     if (!Number.isFinite(amt) || amt <= 0) throw new Error('取款金额必须大于 0')
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const account = await tx.account.findUnique({ where: { id: accountIdNum } })
       if (!account) throw new Error('账户不存在')
       if (account.userId !== userIdNum) throw new Error('无权限操作该账户')
@@ -178,7 +179,7 @@ export const AccountService = {
     const amt = Number(amount)
     if (!Number.isFinite(amt) || amt <= 0) throw new Error('存款金额必须大于 0')
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const account = await tx.account.findUnique({ where: { id: accountIdNum } })
       if (!account) throw new Error('账户不存在')
       if (account.userId !== userIdNum) throw new Error('无权限操作该账户')
