@@ -1,4 +1,6 @@
-import '@/style.css'
+import '@/styles/map.css'
+import '@/styles/global.css'
+import '@/styles/light.css'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'

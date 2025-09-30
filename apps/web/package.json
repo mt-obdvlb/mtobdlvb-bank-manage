@@ -17,6 +17,8 @@
     "dayjs": "^1.11.18",
     "element-plus": "^2.11.4",
     "pinia": "^3.0.3",
+    "sass": "^1.93.2",
+    "sass-loader": "^16.0.5",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.13",
     "vee-validate": "^4.15.1",
