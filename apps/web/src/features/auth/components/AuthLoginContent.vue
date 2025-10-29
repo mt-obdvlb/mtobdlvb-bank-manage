@@ -3,6 +3,7 @@ import { useUserAuth } from '@/features/user/api.ts'
 import { useField, useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { ElMessage } from 'element-plus'
+
 import { userLoginDTO } from '@mtobdvlb/shared-types'
 import { useRouter } from 'vue-router'
 
@@ -14,6 +15,7 @@ const { handleSubmit, resetForm } = useForm({
   validationSchema: toTypedSchema(userLoginDTO),
   initialValues: {
     username: '',
+
     password: '',
   },
 })

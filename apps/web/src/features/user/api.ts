@@ -13,3 +13,5 @@ export const useUserAuth = () => {
     register,
   }
 }
+
+export const useUserGet = () => {}
