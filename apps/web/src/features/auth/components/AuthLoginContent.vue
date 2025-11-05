@@ -3,7 +3,8 @@ import { useUserAuth } from '@/features/user/api.ts'
 import { useField, useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { ElMessage } from 'element-plus'
-
+import { userGet } from '@/services/user'
+import { useUserStore } from '@/stores/user'
 import { userLoginDTO } from '@mtobdvlb/shared-types'
 import { useRouter } from 'vue-router'
 
@@ -40,6 +41,14 @@ const onSubmit = handleSubmit(async (formValues) => {
   if (code) return
   ElMessage.success('登录成功')
   resetForm()
+  const res = await userGet()
+  const userStore = useUserStore()
+  if (res?.data) {
+    userStore.setUser({
+      username: res.data.username,
+      id: res.data.id,
+    })
+  }
   await router.push('/')
 })
 </script>

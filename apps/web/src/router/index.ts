@@ -27,4 +27,18 @@ const router = createRouter({
   routes,
 })
 
+//全局路由守卫
+router.beforeEach((to, from, next) => {
+  const user = localStorage.getItem('user') // 每次都重新获取
+  // 检查是否需要认证的路由
+  if (to.path !== '/login' && !user) {
+    // 用户未登录，重定向到登录页
+    next('/login')
+    return
+  } else {
+    // 允许访问
+    next()
+  }
+})
+
 export default router

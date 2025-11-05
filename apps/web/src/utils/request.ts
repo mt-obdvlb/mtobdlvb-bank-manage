@@ -27,7 +27,10 @@ request.interceptors.response.use(
     } else if (error.message) {
       message = error.message
     }
-
+    if (error.response?.status === 401) {
+      // 401 错误，跳转到登录页
+      window.location.href = '/login'
+    }
     // 显示错误消息
     ElMessage.error(message)
 
