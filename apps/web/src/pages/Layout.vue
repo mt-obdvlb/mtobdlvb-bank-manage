@@ -1,15 +1,23 @@
 <!-- Layout.vue -->
 <script setup lang="ts">
 import { ArrowRight } from '@element-plus/icons-vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
+import { userLogout } from '@/services/user'
+import { useUserStore } from '@/stores/user'
+
 const route = useRoute()
+const router = useRouter()
+const userStore = useUserStore()
+
 // 定义路由路径映射
 const routeMap: Record<string, string> = {
   '/': '首页',
   '/profile': '个人信息主页',
   '/cards': '银行卡管理',
 }
+
 // 计算当前页面的面包屑路径
 const breadcrumbItems = computed(() => {
   const items = [
@@ -34,6 +42,32 @@ const breadcrumbItems = computed(() => {
 const isCurrentPage = (itemPath: string) => {
   return route.path === itemPath
 }
+
+// 退出登录功能
+const handleLogout = async () => {
+  try {
+    await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
+
+    // 清除登录状态
+    const res = await userLogout()
+    if (res.code === 0) {
+      userStore.clearUser()
+      localStorage.removeItem('user')
+      // 跳转到登录页
+      router.push('/login')
+
+      ElMessage.success('已退出登录')
+    }
+  } catch (error) {
+    // 用户取消操作或出现错误
+    if (error === 'cancel') return
+    console.error('退出登录失败:', error)
+  }
+}
 </script>
 
 <template>
@@ -52,6 +86,12 @@ const isCurrentPage = (itemPath: string) => {
           </el-breadcrumb-item>
         </el-breadcrumb>
       </div>
+
+      <!-- 添加退出按钮 -->
+      <div class="logout-section">
+        <el-button type="danger" link class="logout-btn" @click="handleLogout">退出登录</el-button>
+      </div>
+
       <el-divider />
     </div>
 
@@ -72,14 +112,32 @@ const isCurrentPage = (itemPath: string) => {
   flex-direction: column;
   height: 150px;
   padding: 0 50px;
+
   .breadcrumb {
     display: flex;
     align-items: center;
     padding-left: 100px;
     flex: 1;
   }
+
+  .logout-section {
+    position: absolute;
+    right: 50px;
+    top: 30px;
+    z-index: 100;
+
+    .logout-btn {
+      font-size: 18px;
+      padding: 8px 16px;
+    }
+  }
+
   .el-divider {
     margin: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 }
 

@@ -44,10 +44,7 @@ const onSubmit = handleSubmit(async (formValues) => {
   const res = await userGet()
   const userStore = useUserStore()
   if (res?.data) {
-    userStore.setUser({
-      username: res.data.username,
-      id: res.data.id,
-    })
+    userStore.setUser(res.data)
   }
   await router.push('/')
 })

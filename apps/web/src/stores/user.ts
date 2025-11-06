@@ -7,12 +7,12 @@ export type UserState = UserGet
 export const useUserStore = defineStore(
   'user',
   () => {
-    const userInfo = ref<UserState>({ id: '', username: '', email: '', phone: '' })
-    const setUser = (user: UserState) => {
+    const userInfo = ref<UserState | null>({ id: '', username: '', email: '', phone: '' })
+    const setUser = (user: UserState | null) => {
       userInfo.value = user
     }
     const clearUser = () => {
-      userInfo.value = { id: '', username: '', email: '', phone: '' }
+      userInfo.value = null
     }
     return { userInfo, clearUser, setUser }
   },

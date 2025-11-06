@@ -16,7 +16,6 @@ request.interceptors.request.use((config) => {
 request.interceptors.response.use(
   (response: AxiosResponse) => {
     // 成功响应，直接返回 data 内层
-    console.log(response.data)
     return response.data
   },
   (error) => {
