@@ -44,6 +44,7 @@ export const UserService = {
       id: user.id.toString(),
       email: user.email ?? undefined,
       username: user.username,
+      phone: user.phone ?? undefined,
     }
   },
 
