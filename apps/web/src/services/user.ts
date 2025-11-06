@@ -10,6 +10,7 @@ const API = {
   logout: '/logout',
 } as const
 
+//个人信息相关API
 export const userLogin = (body: UserLoginDTO) => request.post<Result>(baseURL + API.login, body)
 
 export const userRegister = (body: UserRegisterDTO) =>

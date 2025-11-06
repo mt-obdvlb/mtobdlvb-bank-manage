@@ -30,8 +30,9 @@ const router = createRouter({
 //全局路由守卫
 router.beforeEach((to, from, next) => {
   const user = localStorage.getItem('user') // 每次都重新获取
+  const userStr = JSON.parse(user || '{}')
   // 检查是否需要认证的路由
-  if (to.path !== '/login' && !user) {
+  if (to.path !== '/login' && !userStr?.userInfo?.id) {
     // 用户未登录，重定向到登录页
     next('/login')
     return
