@@ -128,23 +128,46 @@
         </span>
       </template>
     </el-dialog>
+
+    <!-- 密码确认弹窗组件 -->
+    <PasswordConfirmDialog v-model="passwordDialogVisible" @confirm="getConfirmDialogPassword" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import type { AccountList, AccountListItem } from '@mtobdvlb/shared-types'
+import {
+  accountList,
+  accountCreate,
+  accountDelete,
+  accountWithdraw,
+  accountUnfreeze,
+  accountFreeze,
+  accountBalance,
+  accountDeposit,
+  accountListTransaction,
+} from '@/services/account'
+import PasswordConfirmDialog from '@/components/PasswordConfirmDialog.vue'
 
-// 定义银行卡数据类型
-interface CardItem {
-  id: string
-  name: string
-  updateAt: string
-  status: string // active or frozen
+// PasswordConfirmDialog组件传回的密码
+const confirmDialogPassword = ref('')
+
+// 添加这一行来保存当前要删除的行
+const currentRowToDelete = ref<AccountListItem | null>(null)
+
+//确认删除进入密码确认弹窗
+const getConfirmDialogPassword = (data: string) => {
+  confirmDialogPassword.value = data
+  // 直接执行删除操作
+  if (currentRowToDelete.value) {
+    performDelete(currentRowToDelete.value)
+  }
 }
 
 // 表格数据
-const cardList = ref<CardItem[]>([])
+const cardList = ref<AccountList>()
 const loading = ref(false)
 const currentPage = ref(1)
 const pageSize = ref(10)
@@ -152,7 +175,7 @@ const total = ref(0)
 
 // 对话框相关
 const dialogVisible = ref(false)
-
+const passwordDialogVisible = ref(false)
 // 编辑表单数据
 const form = ref({
   name: '',
@@ -161,10 +184,10 @@ const form = ref({
 
 // 表单验证规则
 const rules = {
-  name: [{ required: true, message: '请输入卡名字', trigger: 'blur' }],
+  name: [{ required: true, message: '请输入卡名', trigger: 'blur' }],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '密码长度应在6-20位之间', trigger: 'blur' },
+    { pattern: /^\d{6}$/, message: '密码必须是6位数字', trigger: 'blur' },
   ],
 }
 
@@ -182,34 +205,12 @@ const formatDate = (dateString: string) => {
 }
 
 // 获取卡片列表
-const getCardList = () => {
+const getCardList = async () => {
   loading.value = true
-  // 模拟 API 请求
-  setTimeout(() => {
-    // 模拟数据
-    cardList.value = [
-      {
-        id: '1',
-        name: '招商银行储蓄卡',
-        updateAt: '2023-05-15T14:30:00',
-        status: 'active',
-      },
-      {
-        id: '2',
-        name: '工商银行信用卡',
-        updateAt: '2023-05-16T09:15:00',
-        status: 'frozen',
-      },
-      {
-        id: '3',
-        name: '建设银行储蓄卡',
-        updateAt: '2023-05-17T16:45:00',
-        status: 'active',
-      },
-    ]
-    total.value = cardList.value.length
-    loading.value = false
-  }, 500)
+  const res = await accountList({ page: currentPage.value, pageSize: pageSize.value })
+  cardList.value = res.data?.list
+  total.value = res.data?.total || 0
+  loading.value = false
 }
 
 // 处理添加按钮点击
@@ -217,39 +218,64 @@ const handleAdd = () => {
   dialogVisible.value = true
 }
 
-// 处理编辑按钮点击
-const handleEdit = (row: CardItem) => {
-  Object.assign(form, row)
-  dialogVisible.value = true
-}
-
 // 处理删除按钮点击
-const handleDelete = (row: CardItem) => {
+const handleDelete = (row: AccountListItem) => {
   ElMessageBox.confirm(`确定要删除银行卡 "${row.name}" 吗？`, '确认删除', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
   })
     .then(() => {
-      // 模拟删除操作
-      ElMessage.success('删除成功')
-      getCardList() // 重新加载数据
+      // 删除操作
+      // 保存当前行
+      currentRowToDelete.value = row
+      // (弹出密码确认弹窗)
+      passwordDialogVisible.value = true
     })
     .catch(() => {
       // 取消删除
     })
 }
 
+//真正删除逻辑
+const performDelete = async (row: AccountListItem) => {
+  try {
+    //TO DO
+    const res = await accountDelete({ id: row.id }, { password: confirmDialogPassword.value })
+    console.log(res)
+    if (res.code === 0) {
+      ElMessage.success('删除成功')
+      getCardList() // 重新加载数据
+    } else {
+      ElMessage.error(res.message || '删除失败')
+    }
+  } catch (err) {
+    console.error('删除银行卡失败:', err)
+    ElMessage.error('网络错误，删除失败')
+  }
+}
+
 // 提交表单
 const submitForm = () => {
   if (!formRef.value) return
 
-  formRef.value.validate((valid: boolean) => {
+  formRef.value.validate(async (valid: boolean) => {
     if (valid) {
-      // 模拟保存操作
-      ElMessage.success('添加成功')
-      dialogVisible.value = false
-      getCardList() // 重新加载数据
+      try {
+        const res = await accountCreate(form.value)
+        if (res.code === 0) {
+          ElMessage.success('添加成功')
+          dialogVisible.value = false
+          getCardList()
+        } else {
+          ElMessage.error(res.message || '添加失败，请稍后重试')
+        }
+      } catch (err) {
+        console.error('添加银行卡失败:', err)
+        ElMessage.error('网络错误，请稍后重试')
+      }
+    } else {
+      ElMessage.error('请填写正确的表单信息')
     }
   })
 }
@@ -271,7 +297,7 @@ const handleCurrentChange = (val: number) => {
 }
 
 // 冻结银行卡
-const handleFreeze = (row: CardItem) => {
+const handleFreeze = (row: AccountListItem) => {
   ElMessageBox.confirm(`确定要冻结银行卡 "${row.name}" 吗？`, '确认冻结', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -289,7 +315,7 @@ const handleFreeze = (row: CardItem) => {
 }
 
 // 解冻银行卡
-const handleUnfreeze = (row: CardItem) => {
+const handleUnfreeze = (row: AccountListItem) => {
   ElMessageBox.confirm(`确定要解冻银行卡 "${row.name}" 吗？`, '确认解冻', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -307,7 +333,7 @@ const handleUnfreeze = (row: CardItem) => {
 }
 
 // 存款
-const handleDeposit = (row: CardItem) => {
+const handleDeposit = (row: AccountListItem) => {
   ElMessageBox.prompt('请输入存款金额', '存款', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -325,7 +351,7 @@ const handleDeposit = (row: CardItem) => {
 }
 
 // 取款
-const handleWithdraw = (row: CardItem) => {
+const handleWithdraw = (row: AccountListItem) => {
   ElMessageBox.prompt('请输入取款金额', '取款', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -343,7 +369,7 @@ const handleWithdraw = (row: CardItem) => {
 }
 
 // 查看余额
-const handleCheckBalance = (row: CardItem) => {
+const handleCheckBalance = (row: AccountListItem) => {
   // 模拟查看余额操作
   ElMessageBox.alert(`银行卡 "${row.name}" 的余额为: ￥10,000.00`, '账户余额', {
     confirmButtonText: '确定',
@@ -351,7 +377,7 @@ const handleCheckBalance = (row: CardItem) => {
 }
 
 // 查看流水
-const handleViewTransactions = (row: CardItem) => {
+const handleViewTransactions = (row: AccountListItem) => {
   // 跳转到交易流水页面或者打开对话框显示流水记录
   ElMessage.info(`查看 "${row.name}" 的交易流水`)
   // 实际项目中这里可以跳转到交易流水页面

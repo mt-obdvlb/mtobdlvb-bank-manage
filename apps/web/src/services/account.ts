@@ -48,7 +48,7 @@ export const accountListTransaction = (id: CommonIdDTO, params: AccountListTrans
 //删除
 export const accountDelete = (id: CommonIdDTO, password: AccountDeleteDTO) =>
   request.delete<Result>(baseURL + API.get + id, {
-    params: password,
+    params: { password },
   })
 
 //获取余额

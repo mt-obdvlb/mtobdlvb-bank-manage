@@ -59,7 +59,6 @@ const handleLogout = async () => {
       localStorage.removeItem('user')
       // 跳转到登录页
       router.push('/login')
-
       ElMessage.success('已退出登录')
     }
   } catch (error) {
