@@ -1,18 +1,18 @@
 import type {
-  Result,
   AccountCreateDTO,
   AccountDeleteDTO,
   AccountDepositDTO,
   AccountFreezeDTO,
-  AccountListTransactionDTO,
+  AccountGetBalance,
+  AccountList,
   AccountListDTO,
+  AccountListTransaction,
+  AccountListTransactionDTO,
   AccountUnfreezeDTO,
   AccountWithdrawDTO,
-  AccountList,
-  AccountListTransaction,
-  AccountGetBalance,
   CommonIdDTO,
   PageResult,
+  Result,
 } from '@mtobdvlb/shared-types'
 
 import request from '@/utils/request.ts'
@@ -46,9 +46,9 @@ export const accountListTransaction = (id: CommonIdDTO, params: AccountListTrans
   })
 
 //删除
-export const accountDelete = (id: CommonIdDTO, password: AccountDeleteDTO) =>
+export const accountDelete = (id: string, params: AccountDeleteDTO) =>
   request.delete<Result>(baseURL + API.get + id, {
-    params: { password },
+    params,
   })
 
 //获取余额
@@ -64,7 +64,7 @@ export const accountWithdraw = (id: CommonIdDTO, amount: AccountWithdrawDTO) =>
   request.post<Result>(baseURL + API.get + id + API.withdraw, amount)
 
 //冻结
-export const accountFreeze = (id: CommonIdDTO, password: AccountFreezeDTO) =>
+export const accountFreeze = (id: string, password: AccountFreezeDTO) =>
   request.post<Result>(baseURL + API.get + id + API.freeze, password)
 
 //解冻

@@ -13,17 +13,17 @@
       <!-- 自定义表格 -->
       <el-table v-loading="loading" :data="cardList" style="width: 100%">
         <!-- ID 列 -->
-        <el-table-column prop="id" label="ID" width="120"></el-table-column>
+        <el-table-column label="ID" prop="id" width="120"></el-table-column>
 
         <!-- 卡名 -->
-        <el-table-column prop="cardName" label="卡名" width="200">
+        <el-table-column label="卡名" prop="cardName" width="200">
           <template #default="scope">
             <el-tag>{{ scope.row.name }}</el-tag>
           </template>
         </el-table-column>
 
         <!-- 上次操作时间 -->
-        <el-table-column prop="lastOperationTime" label="上次操作时间" width="200">
+        <el-table-column label="上次操作时间" prop="lastOperationTime" width="200">
           <template #default="scope">
             <i class="el-icon-time"></i>
             <span>{{ formatDate(scope.row.updateAt) }}</span>
@@ -31,7 +31,7 @@
         </el-table-column>
 
         <!-- 状态 -->
-        <el-table-column prop="status" label="状态" width="200">
+        <el-table-column label="状态" prop="status" width="200">
           <template #default="scope">
             <el-tag :type="scope.row.status === 'active' ? 'success' : 'danger'">
               {{ scope.row.status === 'active' ? '正常' : '冻结' }}
@@ -114,9 +114,9 @@
         <el-form-item label="密码" prop="password">
           <el-input
             v-model="form.password"
-            type="password"
             placeholder="请输入密码"
             show-password
+            type="password"
           />
         </el-form-item>
       </el-form>
@@ -134,21 +134,11 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { AccountList, AccountListItem } from '@mtobdvlb/shared-types'
-import {
-  accountList,
-  accountCreate,
-  accountDelete,
-  accountWithdraw,
-  accountUnfreeze,
-  accountFreeze,
-  accountBalance,
-  accountDeposit,
-  accountListTransaction,
-} from '@/services/account'
+import { accountCreate, accountDelete, accountList } from '@/services/account'
 import PasswordConfirmDialog from '@/components/PasswordConfirmDialog.vue'
 
 // PasswordConfirmDialog组件传回的密码
@@ -240,8 +230,9 @@ const handleDelete = (row: AccountListItem) => {
 //真正删除逻辑
 const performDelete = async (row: AccountListItem) => {
   try {
-    //TO DO
-    const res = await accountDelete({ id: row.id }, { password: confirmDialogPassword.value })
+    // TODO
+    console.log(confirmDialogPassword.value)
+    const res = await accountDelete(row.id, { password: confirmDialogPassword.value })
     console.log(res)
     if (res.code === 0) {
       ElMessage.success('删除成功')
