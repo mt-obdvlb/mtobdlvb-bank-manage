@@ -131,6 +131,13 @@
 
     <!-- 密码确认弹窗组件 -->
     <PasswordConfirmDialog v-model="passwordDialogVisible" @confirm="getConfirmDialogPassword" />
+
+    <!-- 存款弹窗组件 -->
+    <WithdrawDialog
+      v-model="withdrawDialogVisible"
+      @close="currentRowToWithdraw = null"
+      @commitWithdraw="performWithdraw"
+    />
   </div>
 </template>
 
@@ -138,8 +145,19 @@
 import { onMounted, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { AccountList, AccountListItem } from '@mtobdvlb/shared-types'
-import { accountCreate, accountDelete, accountList } from '@/services/account'
+import {
+  accountCreate,
+  accountDelete,
+  accountList,
+  accountDeposit,
+  accountBalance,
+  accountListTransaction,
+  accountWithdraw,
+} from '@/services/account'
 import PasswordConfirmDialog from '@/components/PasswordConfirmDialog.vue'
+
+// 取款弹窗组件
+const withdrawDialogVisible = ref(false)
 
 // PasswordConfirmDialog组件传回的密码
 const confirmDialogPassword = ref('')
@@ -147,12 +165,23 @@ const confirmDialogPassword = ref('')
 // 添加这一行来保存当前要删除的行
 const currentRowToDelete = ref<AccountListItem | null>(null)
 
+// 添加这一行来保存当前要取款的行
+const currentRowToWithdraw = ref<AccountListItem | null>(null)
+
+// 添加这一行来保存当前要查询流水的行
+const currentRowToTransactions = ref<AccountListItem | null>(null)
+
 //确认删除进入密码确认弹窗
 const getConfirmDialogPassword = (data: string) => {
   confirmDialogPassword.value = data
   // 直接执行删除操作
   if (currentRowToDelete.value) {
-    performDelete(currentRowToDelete.value)
+    performDelete()
+    currentRowToDelete.value = null
+  }
+  // 进入查询流水弹窗
+  if (currentRowToTransactions.value) {
+    currentRowToTransactions.value = null
   }
 }
 
@@ -203,49 +232,6 @@ const getCardList = async () => {
   loading.value = false
 }
 
-// 处理添加按钮点击
-const handleAdd = () => {
-  dialogVisible.value = true
-}
-
-// 处理删除按钮点击
-const handleDelete = (row: AccountListItem) => {
-  ElMessageBox.confirm(`确定要删除银行卡 "${row.name}" 吗？`, '确认删除', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  })
-    .then(() => {
-      // 删除操作
-      // 保存当前行
-      currentRowToDelete.value = row
-      // (弹出密码确认弹窗)
-      passwordDialogVisible.value = true
-    })
-    .catch(() => {
-      // 取消删除
-    })
-}
-
-//真正删除逻辑
-const performDelete = async (row: AccountListItem) => {
-  try {
-    // TODO
-    console.log(confirmDialogPassword.value)
-    const res = await accountDelete(row.id, { password: confirmDialogPassword.value })
-    console.log(res)
-    if (res.code === 0) {
-      ElMessage.success('删除成功')
-      getCardList() // 重新加载数据
-    } else {
-      ElMessage.error(res.message || '删除失败')
-    }
-  } catch (err) {
-    console.error('删除银行卡失败:', err)
-    ElMessage.error('网络错误，删除失败')
-  }
-}
-
 // 提交表单
 const submitForm = () => {
   if (!formRef.value) return
@@ -269,6 +255,29 @@ const submitForm = () => {
       ElMessage.error('请填写正确的表单信息')
     }
   })
+}
+// 处理添加按钮点击
+const handleAdd = () => {
+  dialogVisible.value = true
+}
+
+// 处理删除按钮点击
+const handleDelete = (row: AccountListItem) => {
+  ElMessageBox.confirm(`确定要删除银行卡 "${row.name}" 吗？`, '确认删除', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(() => {
+      // 删除操作
+      // 保存当前行
+      currentRowToDelete.value = row
+      // (弹出密码确认弹窗)
+      passwordDialogVisible.value = true
+    })
+    .catch(() => {
+      // 取消删除
+    })
 }
 
 // 关闭对话框时重置表单
@@ -331,10 +340,18 @@ const handleDeposit = (row: AccountListItem) => {
     inputPattern: /^([1-9][0-9]{0,9}|0)(\.[0-9]{1,2})?$/,
     inputErrorMessage: '请输入正确的金额',
   })
-    .then(({ value }) => {
-      // 模拟存款操作
-      ElMessage.success(`成功存入 ${value} 元`)
-      // 实际项目中这里应该调用API进行存款操作
+    .then(async ({ value }) => {
+      try {
+        const res = await accountDeposit(row.id, { amount: +value })
+        if (res.code === 0) {
+          ElMessage.success(`成功存入 ${value} 元`)
+        } else {
+          ElMessage.error(res.message || '存款失败')
+        }
+      } catch (err) {
+        console.error('存款失败:', err)
+        ElMessage.error('网络错误，存款失败')
+      }
     })
     .catch(() => {
       // 取消操作
@@ -343,37 +360,87 @@ const handleDeposit = (row: AccountListItem) => {
 
 // 取款
 const handleWithdraw = (row: AccountListItem) => {
-  ElMessageBox.prompt('请输入取款金额', '取款', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    inputPattern: /^([1-9][0-9]{0,9}|0)(\.[0-9]{1,2})?$/,
-    inputErrorMessage: '请输入正确的金额',
-  })
-    .then(({ value }) => {
-      // 模拟取款操作
-      ElMessage.success(`成功取出 ${value} 元`)
-      // 实际项目中这里应该调用API进行取款操作
-    })
-    .catch(() => {
-      // 取消操作
-    })
+  currentRowToWithdraw.value = row
+  withdrawDialogVisible.value = true
 }
 
 // 查看余额
-const handleCheckBalance = (row: AccountListItem) => {
-  // 模拟查看余额操作
-  ElMessageBox.alert(`银行卡 "${row.name}" 的余额为: ￥10,000.00`, '账户余额', {
-    confirmButtonText: '确定',
-  })
+const handleCheckBalance = async (row: AccountListItem) => {
+  try {
+    // 确保 id 存在
+    const id = row.id
+    if (!id) {
+      ElMessage.error('无效的银行卡信息')
+      return
+    }
+    const res = await accountBalance(id)
+    // console.log(res)
+    if (res.code === 0) {
+      ElMessageBox.alert(`银行卡 "${row.name}" 的余额为: ${res.data?.amount}`, '账户余额', {
+        confirmButtonText: '确定',
+      })
+    } else {
+      ElMessage.error(res.message || '查询余额失败')
+    }
+  } catch (err) {
+    console.error('查询余额失败:', err)
+    ElMessage.error('网络错误，查询余额失败')
+  }
 }
 
 // 查看流水
 const handleViewTransactions = (row: AccountListItem) => {
-  // 跳转到交易流水页面或者打开对话框显示流水记录
-  ElMessage.info(`查看 "${row.name}" 的交易流水`)
-  // 实际项目中这里可以跳转到交易流水页面
-  // 或者打开一个新的对话框显示详细流水
+  // 保存当前行信息用于后续操作
+  currentRowToTransactions.value = row
+  // 显示密码确认弹窗
+  passwordDialogVisible.value = true
+  // 后续展示流水的逻辑
 }
+//真正删除逻辑
+const performDelete = async () => {
+  if (!currentRowToDelete.value) {
+    ElMessage.error('当前操作项不存在')
+    return
+  }
+  try {
+    const res = await accountDelete(currentRowToDelete.value.id, {
+      password: confirmDialogPassword.value,
+    })
+    console.log(res)
+    if (res.code === 0) {
+      ElMessage.success('删除成功')
+      getCardList() // 重新加载数据
+    } else {
+      // ElMessage.error(res.message || '删除失败')
+    }
+  } catch (err) {
+    console.error('删除银行卡失败:', err)
+    ElMessage.error('网络错误，删除失败')
+  }
+}
+
+// 真正取款逻辑
+const performWithdraw = async (data: { amount: number; password: string }) => {
+  if (!currentRowToWithdraw.value) {
+    ElMessage.error('当前操作项不存在')
+    return
+  }
+  try {
+    const res = await accountWithdraw(currentRowToWithdraw.value.id, {
+      amount: data.amount,
+      password: data.password,
+    })
+    if (res.code === 0) {
+      ElMessage.success(`成功取出 ${data.amount} 元`)
+    } else {
+      // ElMessage.error(res.message || '取款失败')
+    }
+  } catch (err) {
+    console.error('取款失败:', err)
+  }
+}
+// 真正查看流水逻辑
+const performViewTransactions = async () => {}
 </script>
 
 <style lang="scss" scoped>

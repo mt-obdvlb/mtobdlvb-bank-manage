@@ -52,15 +52,15 @@ export const accountDelete = (id: string, params: AccountDeleteDTO) =>
   })
 
 //获取余额
-export const accountBalance = (id: CommonIdDTO) =>
+export const accountBalance = (id: string) =>
   request.get<Result<AccountGetBalance>>(baseURL + API.get + id + API.balance)
 
 //存款
-export const accountDeposit = (id: CommonIdDTO, amount: AccountDepositDTO) =>
+export const accountDeposit = (id: string, amount: AccountDepositDTO) =>
   request.post<Result>(baseURL + API.get + id + API.deposit, amount)
 
 //取款
-export const accountWithdraw = (id: CommonIdDTO, amount: AccountWithdrawDTO) =>
+export const accountWithdraw = (id: string, amount: AccountWithdrawDTO) =>
   request.post<Result>(baseURL + API.get + id + API.withdraw, amount)
 
 //冻结
