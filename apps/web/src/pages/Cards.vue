@@ -151,8 +151,10 @@ import {
   accountList,
   accountDeposit,
   accountBalance,
-  accountListTransaction,
   accountWithdraw,
+  accountFreeze,
+  accountUnfreeze,
+  accountListTransaction,
 } from '@/services/account'
 import PasswordConfirmDialog from '@/components/PasswordConfirmDialog.vue'
 
@@ -168,6 +170,12 @@ const currentRowToDelete = ref<AccountListItem | null>(null)
 // 添加这一行来保存当前要取款的行
 const currentRowToWithdraw = ref<AccountListItem | null>(null)
 
+// 添加这一行来保存当前要冻结的行
+const currentRowToFreeze = ref<AccountListItem | null>(null)
+
+// 添加这一行来保存当前要解冻的行
+const currentRowToUnfreeze = ref<AccountListItem | null>(null)
+
 // 添加这一行来保存当前要查询流水的行
 const currentRowToTransactions = ref<AccountListItem | null>(null)
 
@@ -182,6 +190,16 @@ const getConfirmDialogPassword = (data: string) => {
   // 进入查询流水弹窗
   if (currentRowToTransactions.value) {
     currentRowToTransactions.value = null
+  }
+  // 进入冻结弹窗
+  if (currentRowToFreeze.value) {
+    performFreeze()
+    currentRowToFreeze.value = null
+  }
+  // 进入解冻弹窗
+  if (currentRowToUnfreeze.value) {
+    performUnfreeze()
+    currentRowToUnfreeze.value = null
   }
 }
 
@@ -304,10 +322,9 @@ const handleFreeze = (row: AccountListItem) => {
     type: 'warning',
   })
     .then(() => {
-      // 模拟冻结操作
-      ElMessage.success('冻结成功')
-      // 实际项目中这里应该调用API更新状态
-      getCardList()
+      // 冻结操作
+      currentRowToFreeze.value = row
+      passwordDialogVisible.value = true
     })
     .catch(() => {
       // 取消操作
@@ -322,10 +339,9 @@ const handleUnfreeze = (row: AccountListItem) => {
     type: 'warning',
   })
     .then(() => {
-      // 模拟解冻操作
-      ElMessage.success('解冻成功')
-      // 实际项目中这里应该调用API更新状态
-      getCardList()
+      // 解冻操作
+      currentRowToUnfreeze.value = row
+      passwordDialogVisible.value = true
     })
     .catch(() => {
       // 取消操作
@@ -439,6 +455,49 @@ const performWithdraw = async (data: { amount: number; password: string }) => {
     console.error('取款失败:', err)
   }
 }
+
+//真正冻结逻辑
+const performFreeze = async () => {
+  if (!currentRowToFreeze.value) {
+    ElMessage.error('当前操作项不存在')
+    return
+  }
+  try {
+    const res = await accountFreeze(currentRowToFreeze.value.id, {
+      password: confirmDialogPassword.value,
+    })
+    if (res.code === 0) {
+      ElMessage.success('冻结成功')
+      getCardList() // 刷新数据
+    } else {
+      // ElMessage.error(res.message || '冻结失败')
+    }
+  } catch (err) {
+    console.error('冻结失败:', err)
+  }
+}
+
+// 真正解冻逻辑
+const performUnfreeze = async () => {
+  if (!currentRowToUnfreeze.value) {
+    ElMessage.error('当前操作项不存在')
+    return
+  }
+  try {
+    const res = await accountUnfreeze(currentRowToUnfreeze.value.id, {
+      password: confirmDialogPassword.value,
+    })
+    if (res.code === 0) {
+      ElMessage.success('解冻成功')
+      getCardList() // 刷新数据
+    } else {
+      // ElMessage.error(res.message || '冻结失败')
+    }
+  } catch (err) {
+    console.error('冻结失败:', err)
+  }
+}
+
 // 真正查看流水逻辑
 const performViewTransactions = async () => {}
 </script>

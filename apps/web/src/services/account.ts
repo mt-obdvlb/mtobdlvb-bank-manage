@@ -68,5 +68,5 @@ export const accountFreeze = (id: string, password: AccountFreezeDTO) =>
   request.post<Result>(baseURL + API.get + id + API.freeze, password)
 
 //解冻
-export const accountUnfreeze = (id: AccountUnfreezeDTO) =>
-  request.post<Result>(baseURL + API.get + id + API.unfreeze)
+export const accountUnfreeze = (id: string, password: AccountUnfreezeDTO) =>
+  request.post<Result>(baseURL + API.get + id + API.unfreeze, password)
