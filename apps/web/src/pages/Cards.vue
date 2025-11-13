@@ -95,7 +95,7 @@
         <el-pagination
           v-model:current-page="currentPage"
           v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 50]"
+          :page-sizes="[5, 10, 20]"
           :total="total"
           layout="total, sizes, prev, pager, next, jumper"
           @size-change="handleSizeChange"
@@ -132,11 +132,18 @@
     <!-- 密码确认弹窗组件 -->
     <PasswordConfirmDialog v-model="passwordDialogVisible" @confirm="getConfirmDialogPassword" />
 
-    <!-- 存款弹窗组件 -->
+    <!-- 取款弹窗组件 -->
     <WithdrawDialog
       v-model="withdrawDialogVisible"
       @close="currentRowToWithdraw = null"
       @commitWithdraw="performWithdraw"
+    />
+
+    <!-- 流水弹窗组件 -->
+    <TransactionHistoryDialog
+      v-model="transactionDialogVisible"
+      :row="currentRowToTransactions"
+      @close="currentRowToTransactions = null"
     />
   </div>
 </template>
@@ -154,9 +161,13 @@ import {
   accountWithdraw,
   accountFreeze,
   accountUnfreeze,
-  accountListTransaction,
 } from '@/services/account'
 import PasswordConfirmDialog from '@/components/PasswordConfirmDialog.vue'
+import WithdrawDialog from '@/components/WithdrawDialog.vue'
+import TransactionHistoryDialog from '@/components/TransactionHistoryDialog.vue'
+
+//流水弹窗组件
+const transactionDialogVisible = ref(false)
 
 // 取款弹窗组件
 const withdrawDialogVisible = ref(false)
@@ -404,13 +415,10 @@ const handleCheckBalance = async (row: AccountListItem) => {
   }
 }
 
-// 查看流水
+//查看流水
 const handleViewTransactions = (row: AccountListItem) => {
-  // 保存当前行信息用于后续操作
   currentRowToTransactions.value = row
-  // 显示密码确认弹窗
-  passwordDialogVisible.value = true
-  // 后续展示流水的逻辑
+  transactionDialogVisible.value = true
 }
 //真正删除逻辑
 const performDelete = async () => {
@@ -497,9 +505,6 @@ const performUnfreeze = async () => {
     console.error('冻结失败:', err)
   }
 }
-
-// 真正查看流水逻辑
-const performViewTransactions = async () => {}
 </script>
 
 <style lang="scss" scoped>

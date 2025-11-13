@@ -40,7 +40,7 @@ export const accountList = (params: AccountListDTO) =>
   request.get<PageResult<AccountList>>(baseURL + API.list, { params })
 
 //获取流水列表
-export const accountListTransaction = (id: CommonIdDTO, params: AccountListTransactionDTO) =>
+export const accountListTransaction = (id: string, params: AccountListTransactionDTO) =>
   request.get<PageResult<AccountListTransaction>>(baseURL + API.get + id + API.transactions, {
     params,
   })

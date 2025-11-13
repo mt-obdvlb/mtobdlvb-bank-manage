@@ -1,4 +1,3 @@
-<!-- src/components/WithdrawDialog.vue -->
 <template>
   <el-dialog v-model="visible" title="取款" width="500px" @close="handleClose">
     <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
