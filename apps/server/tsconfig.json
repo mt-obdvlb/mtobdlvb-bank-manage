@@ -1,25 +1,29 @@
 {
   "extends": "@mtobdvlb/typescript-config/base.json",
   "compilerOptions": {
-    "lib": [
-      "es2022"
-    ],
+    "lib": ["es2022"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "outDir": "dist",
-    "rootDir": "src",
-    "baseUrl": "./src",
+    "rootDir": ".", // 关键修改1：rootDir 设为项目根目录（包含 src 和 __tests__）
+    "baseUrl": ".", // 关键修改2：baseUrl 同步为根目录，适配路径别名
     "paths": {
-      "@/*": [
-        "*"
-      ]
-    }
+      "@/*": ["src/*"] // 路径别名不变，仍指向 src 下的文件
+    },
+    "typeRoots": ["./node_modules/@types", "./src/types"], // 确保类型文件被扫描
+    "types": ["node", "jest", "express"] // 显式包含依赖类型
   },
   "include": [
-    "src"
+    "src/**/*", // src 目录所有文件
+    "__tests__/**/*", // 测试目录所有文件
+    "jest.setup.ts", // 关键修改3：单独包含 jest.setup.ts（解决 TS6059）,
+    "__mocks__/**/*"
   ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ]
+  "exclude": ["dist", "node_modules"],
+  "ts-node": { // 可选：适配 ts-node 运行测试（避免模块解析错误）
+    "moduleTypes": {
+      "jest.setup.ts": "cjs",
+      "__tests__/**/*.test.ts": "cjs"
+    }
+  }
 }

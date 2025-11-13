@@ -1,0 +1,277 @@
+<html><head><meta charset="utf-8"/><title>测试报告</title><style type="text/css">:root {
+  --text-primary: #111;
+  --text-secondary: #4f4f4f;
+  --success: #006633;
+  --success-bright: #80ffbf;
+  --danger: #cc071e;
+  --danger-bright: #fbdfe0;
+  --warning: #995c00;
+  --warning-bright: #ffeea8;
+  --panel: #eee;
+  --border: #949494;
+  --disabled: #6b6b6b;
+}
+
+html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+}
+body {
+  padding: 2rem 1rem;
+}
+.jesthtml-content {
+  margin: 0 auto;
+  max-width: 70rem;
+}
+header {
+  display: flex;
+  align-items: center;
+}
+#title {
+  margin: 0;
+  flex-grow: 1;
+}
+#logo {
+  height: 4rem;
+}
+#timestamp {
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+#metadata-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.additional-information-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+/** SUMMARY */
+#summary {
+  color: var(--text-primary);
+  display: flex;
+  font-family: monospace;
+  font-size: 1rem;
+}
+#summary > div {
+  margin-right: 0.5rem;
+  background: var(--panel);
+  padding: 1rem;
+  min-width: 15rem;
+}
+#summary > div:last-child {
+  margin-right: 0;
+}
+@media only screen and (max-width: 720px) {
+  #summary {
+    flex-direction: column;
+  }
+  #summary > div {
+    margin-right: 0;
+    margin-top: 1rem;
+  }
+  #summary > div:first-child {
+    margin-top: 0;
+  }
+}
+
+.summary-total {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.summary-passed {
+  color: var(--success);
+  border-left: 0.4rem solid var(--success);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-failed,
+.summary-obsolete-snapshots {
+  color: var(--danger);
+  border-left: 0.4rem solid var(--danger);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-pending {
+  color: var(--warning);
+  border-left: 0.4rem solid var(--warning);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-empty {
+  color: var(--disabled);
+  border-left: 0.4rem solid var(--disabled);
+  margin-bottom: 0.15rem;
+}
+
+.test-result {
+  padding: 1rem;
+  margin-bottom: 0.25rem;
+}
+.test-result:last-child {
+  border: 0;
+}
+.test-result.passed {
+  background-color: var(--success-bright);
+  color: var(--success);
+}
+.test-result.failed {
+  background-color: var(--danger-bright);
+  color: var(--danger);
+}
+.test-result.pending {
+  background-color: var(--warning-bright);
+  color: var(--warning);
+}
+
+.test-info {
+  display: flex;
+  justify-content: space-between;
+}
+.test-suitename {
+  width: 20%;
+  text-align: left;
+  font-weight: bold;
+  word-break: break-word;
+}
+.test-title {
+  width: 40%;
+  text-align: left;
+  font-style: italic;
+}
+.test-status {
+  width: 20%;
+  text-align: right;
+}
+.test-duration {
+  width: 10%;
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+.failureMessages {
+  padding: 0 1rem;
+  margin-top: 1rem;
+  border-top: 1px dashed var(--danger);
+}
+.failureMessages.suiteFailure {
+  border-top: none;
+}
+.failureMsg {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+.suite-container {
+  margin-bottom: 1rem;
+}
+.suite-info {
+  padding: 1rem;
+  background-color: var(--panel);
+  color: var(--text-secondary);
+  border: 0.15rem solid;
+  border-color: var(--panel);
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.suite-info:hover {
+  border-color: var(--border);
+  cursor: pointer;
+}
+.suite-info .suite-path {
+  word-break: break-all;
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: 1rem;
+}
+.suite-info .suite-time {
+  margin-left: 1rem;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.85rem;
+}
+.suite-info .suite-time.warn {
+  background-color: var(--danger);
+  color: #fff;
+}
+.suite-info:before {
+  content: "\2303";
+  display: inline-block;
+  margin-right: 1rem;
+  transform: rotate(180deg) translateY(0.15rem);
+}
+.suite-container[open] .suite-info:before {
+  transform: rotate(0deg) translateY(0.15rem);
+}
+
+/* CONSOLE LOGS */
+.suite-consolelog {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: var(--panel);
+}
+.suite-consolelog-header {
+  font-weight: bold;
+}
+.suite-consolelog-item {
+  padding: 0.5rem;
+}
+.suite-consolelog-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-consolelog-item-origin {
+  color: var(--text-secondary);
+  font-weight: bold;
+}
+.suite-consolelog-item-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+
+/* OBSOLETE SNAPSHOTS */
+.suite-obsolete-snapshots {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: var(--danger-bright);
+  color: var(--danger);
+}
+.suite-obsolete-snapshots-header {
+  font-weight: bold;
+}
+.suite-obsolete-snapshots-item {
+  padding: 0.5rem;
+}
+.suite-obsolete-snapshots-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-obsolete-snapshots-item-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+</style></head><body><main class="jesthtml-content"><header><h1 id="title">测试报告</h1></header><section id="metadata-container"><div id="timestamp">Started: 2025-11-14 00:26:12</div><div id="summary"><div id="suite-summary"><div class="summary-total">Suites (7)</div><div class="summary-passed ">7 passed</div><div class="summary-failed  summary-empty">0 failed</div><div class="summary-pending  summary-empty">0 pending</div></div><div id="test-summary"><div class="summary-total">Tests (44)</div><div class="summary-passed ">44 passed</div><div class="summary-failed  summary-empty">0 failed</div><div class="summary-pending  summary-empty">0 pending</div></div></div></section><details id="suite-1" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/mtobdvlb/Desktop/Code/Project/BankManage/apps/server/__tests__/service/account.service.test.ts</div><div class="suite-time">1.46s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">AccountService（账户服务层）- 集成测试</div><div class="test-title">create() - 密码非6位数字 → 抛出错误</div><div class="test-status">passed</div><div class="test-duration">0.008s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AccountService（账户服务层）- 集成测试</div><div class="test-title">create() - 正常创建 → 成功</div><div class="test-status">passed</div><div class="test-duration">0.057s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AccountService（账户服务层）- 集成测试</div><div class="test-title">create() - 账户名已被占用 → 抛出错误</div><div class="test-status">passed</div><div class="test-duration">0.054s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AccountService（账户服务层）- 集成测试</div><div class="test-title">deposit() - 存款金额 ≤ 0 → 抛出错误</div><div class="test-status">passed</div><div class="test-duration">0.052s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AccountService（账户服务层）- 集成测试</div><div class="test-title">deposit() - 正常存款 → 成功</div><div class="test-status">passed</div><div class="test-duration">0.058s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AccountService（账户服务层）- 集成测试</div><div class="test-title">withdraw() - 金额 ≤ 0 → 抛出错误</div><div class="test-status">passed</div><div class="test-duration">0.053s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AccountService（账户服务层）- 集成测试</div><div class="test-title">withdraw() - 正常提现 → 成功</div><div class="test-status">passed</div><div class="test-duration">0.107s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AccountService（账户服务层）- 集成测试</div><div class="test-title">getBalance() - 获取余额 → 正确返回</div><div class="test-status">passed</div><div class="test-duration">0.052s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AccountService（账户服务层）- 集成测试</div><div class="test-title">delete() - 正常销户 → 成功</div><div class="test-status">passed</div><div class="test-duration">0.106s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">AccountService（账户服务层）- 集成测试</div><div class="test-title">freeze/unfreeze() → 正确切换状态</div><div class="test-status">passed</div><div class="test-duration">0.16s</div></div></div></div></details><details id="suite-2" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/mtobdvlb/Desktop/Code/Project/BankManage/apps/server/__tests__/utils/bcrypt.util.test.ts</div><div class="suite-time">0.492s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">Utils: bcrypt.util（密码加密与验证功能测试）</div><div class="test-title">hashPassword函数应成功生成非空的加密密码字符串</div><div class="test-status">passed</div><div class="test-duration">0.053s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Utils: bcrypt.util（密码加密与验证功能测试）</div><div class="test-title">comparePassword函数：输入正确原始密码时，应返回true（验证成功）</div><div class="test-status">passed</div><div class="test-duration">0.051s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Utils: bcrypt.util（密码加密与验证功能测试）</div><div class="test-title">comparePassword函数：输入错误原始密码时，应返回false（验证失败）</div><div class="test-status">passed</div><div class="test-duration">0.051s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Utils: bcrypt.util（密码加密与验证功能测试）</div><div class="test-title">边界场景测试：特殊字符密码、空密码应能正常加密和验证</div><div class="test-status">passed</div><div class="test-duration">0.297s</div></div></div></div></details><details id="suite-3" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/mtobdvlb/Desktop/Code/Project/BankManage/apps/server/__tests__/service/user.service.test.ts</div><div class="suite-time">0.464s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; register()</div><div class="test-title">两次密码不一致 → 抛出错误</div><div class="test-status">passed</div><div class="test-duration">0.004s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; register()</div><div class="test-title">用户名已存在 → 抛出错误</div><div class="test-status">passed</div><div class="test-duration">0.053s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; register()</div><div class="test-title">正常注册 → 成功</div><div class="test-status">passed</div><div class="test-duration">0.053s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; login()</div><div class="test-title">用户不存在 → 抛出错误</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; login()</div><div class="test-title">密码错误 → 抛出错误</div><div class="test-status">passed</div><div class="test-duration">0.05s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; login()</div><div class="test-title">正常登录 → 返回 token</div><div class="test-status">passed</div><div class="test-duration">0.052s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; get()</div><div class="test-title">用户不存在 → 抛出错误</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; get()</div><div class="test-title">正常获取 → 返回用户信息</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; update()</div><div class="test-title">两次密码不一致 → 抛出错误</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; update()</div><div class="test-title">正常更新 → 成功修改用户名和电话</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">UserService（用户服务层） &gt; update()</div><div class="test-title">正常更新密码 → 成功</div><div class="test-status">passed</div><div class="test-duration">0.053s</div></div></div></div></details><details id="suite-4" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/mtobdvlb/Desktop/Code/Project/BankManage/apps/server/__tests__/utils/jwt.util.test.ts</div><div class="suite-time">0.048s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">Utils: jwt.util（Token生成与验证功能测试）</div><div class="test-title">signToken函数应生成格式正确、包含有效Payload的Token</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Utils: jwt.util（Token生成与验证功能测试）</div><div class="test-title">verifyToken函数：解析有效Token时，应返回包含用户ID的Payload对象</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Utils: jwt.util（Token生成与验证功能测试）</div><div class="test-title">verifyToken函数：解析伪造Token（格式错误）时，应抛出INVALID_TOKEN错误</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Utils: jwt.util（Token生成与验证功能测试）</div><div class="test-title">verifyToken函数：解析过期Token时，应抛出Token过期错误（或INVALID_TOKEN）</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Utils: jwt.util（Token生成与验证功能测试）</div><div class="test-title">verifyToken函数：解析签名错误的Token（错误密钥）时，应抛出INVALID_TOKEN错误</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div></div></details><details id="suite-5" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/mtobdvlb/Desktop/Code/Project/BankManage/apps/server/__tests__/middlewares/validator.middleware.test.ts</div><div class="suite-time">0.053s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: validator.middleware（Zod参数验证中间件）</div><div class="test-title">body参数符合Schema时，验证通过并执行next</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: validator.middleware（Zod参数验证中间件）</div><div class="test-title">body参数不符合Schema时，返回400和Zod错误信息</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: validator.middleware（Zod参数验证中间件）</div><div class="test-title">query参数符合Schema时，验证通过并执行next</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: validator.middleware（Zod参数验证中间件）</div><div class="test-title">query参数不符合Schema时，返回400和Zod错误信息</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: validator.middleware（Zod参数验证中间件）</div><div class="test-title">params参数符合Schema时，验证通过并执行next</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: validator.middleware（Zod参数验证中间件）</div><div class="test-title">params参数不符合Schema时，返回400和Zod错误信息</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div></div></details><details id="suite-6" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/mtobdvlb/Desktop/Code/Project/BankManage/apps/server/__tests__/middlewares/auth.middleware.test.ts</div><div class="suite-time">0.038s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: auth.middleware（Cookie Token认证中间件）</div><div class="test-title">有Cookie但无token时，应返回401状态码和AUTH_ERROR提示</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: auth.middleware（Cookie Token认证中间件）</div><div class="test-title">Cookie中有无效Token（伪造）时，应返回401和INVALID_TOKEN提示</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: auth.middleware（Cookie Token认证中间件）</div><div class="test-title">Cookie中有过期Token时，应返回401和INVALID_TOKEN提示</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: auth.middleware（Cookie Token认证中间件）</div><div class="test-title">Cookie中有有效Token时，应挂载user到req并执行next（通过认证）</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div></div></details><details id="suite-7" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/mtobdvlb/Desktop/Code/Project/BankManage/apps/server/__tests__/middlewares/error.middleware.test.ts</div><div class="suite-time">0.042s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: error.middleware（全局错误处理中间件）</div><div class="test-title">错误对象含statusCode和message时，返回对应状态码和自定义信息</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: error.middleware（全局错误处理中间件）</div><div class="test-title">错误对象无statusCode时，默认返回500状态码</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: error.middleware（全局错误处理中间件）</div><div class="test-title">错误对象无message时，默认返回INTERNAL_SERVER_ERROR信息</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Middlewares: error.middleware（全局错误处理中间件）</div><div class="test-title">错误对象无statusCode和message时，返回500+默认服务器错误</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div></div></details></main></body></html>

@@ -6,7 +6,7 @@ export type Result<T = undefined> = {
 
 export interface Page<T> {
   total: number
-  list: T
+  list: T[]
 }
 
 export type PageResult<T> = Result<Page<T>>
